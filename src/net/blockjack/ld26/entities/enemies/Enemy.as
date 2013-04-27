@@ -11,73 +11,26 @@ package net.blockjack.ld26.entities.enemies
 	 */
 	public class Enemy extends FlxSprite
 	{
-		[Embed(source="../../../../../../assets/gfx/entities/enemies/Enemy.png")]
-		private const EnemyPNG:Class;
+		protected var speed:Number;
+		protected const JUMP_SPEED:Number = 55;
 		
-		private static const WIDTH:Number = 8;
-		private static const HEIGHT:Number = 8;
-		
-		private static const ANIM_WALK:String = "walk";
-		
-		private var speed:Number;
-		private const BASE_SPEED:Number = -0.2;
-		private const JUMP_SPEED:Number = 55;
-		
-		public function Enemy() 
-		{
-			loadAnimations();
-			
-			reset(0, 0);
-		}
-		
-		private function loadAnimations():void {
-			loadGraphic(EnemyPNG, true, true, WIDTH, HEIGHT);
-			addAnimation(ANIM_WALK, [0, 1], 20, true);
-		}
+		protected static const WIDTH:Number = 8;
+		protected static const HEIGHT:Number = 8;
 		
 		override public function update():void {
 			super.update();
 			
 			boundaryCheck();
-			move();
 		}
 		
-		private function boundaryCheck():void {
-			// collide with left/right play area
-			if (x > Main.SWF_WIDTH - width) {
-				speed = -speed;
-				x = Main.SWF_WIDTH - width;
-			}
-			else if (x < 0) {
-				speed = -speed;
-				x = 0;
-			}
-			
+		protected function boundaryCheck():void {
 			// collide with walls
 			if (isTouching(RIGHT) || isTouching(LEFT)) {
 				turnAround();
 			}
-			
-			// nearing a platform edge
-			if (facing == LEFT && !Registry.engine.levelOverlapsPoint(x, y + height)) {
-				turnAround();
-			}
-			else if (facing == RIGHT && !Registry.engine.levelOverlapsPoint(x + width, y + height)) {
-				turnAround();
-			}
-			
-			// off bottom of screen
-			if (y > Main.SWF_HEIGHT - height && alive) {
-				y = Main.SWF_HEIGHT - height;
-				velocity.y = 0;
-			}
 		}
 		
-		private function move():void {
-			x += speed;
-		}
-		
-		private function turnAround():void {
+		protected function turnAround():void {
 			speed = -speed;
 			
 			if (facing == RIGHT) {
@@ -86,6 +39,8 @@ package net.blockjack.ld26.entities.enemies
 			else {
 				facing = RIGHT;
 			}
+			
+			velocity.x = -velocity.x;
 		}
 		
 		override public function reset(x:Number, y:Number):void {
@@ -93,10 +48,7 @@ package net.blockjack.ld26.entities.enemies
 			
 			acceleration.y = Level.GRAVITY;
 			maxVelocity.y = JUMP_SPEED;
-			speed = BASE_SPEED;
 			facing = LEFT;
-			
-			play(ANIM_WALK);
 		}
 		
 	}
