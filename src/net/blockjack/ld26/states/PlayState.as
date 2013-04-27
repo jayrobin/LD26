@@ -1,5 +1,6 @@
 package net.blockjack.ld26.states 
 {
+	import net.blockjack.ld26.entities.enemies.Bullet;
 	import net.blockjack.ld26.entities.enemies.Enemy;
 	import net.blockjack.ld26.entities.Player;
 	import net.blockjack.ld26.Main;
@@ -25,6 +26,7 @@ package net.blockjack.ld26.states
 		private var gibs:FlxEmitter
 		
 		private var enemies:FlxGroup;
+		private var projectiles:FlxGroup;
 		
 		private var level:Level;
 		private var tilemapLevel:FlxTilemap;
@@ -81,6 +83,7 @@ package net.blockjack.ld26.states
 		
 		private function createEnemies():void {
 			enemies = level.getEnemies(Registry.levelNum);
+			projectiles = new FlxGroup();
 		}
 		
 		private function createUI():void {
@@ -101,6 +104,7 @@ package net.blockjack.ld26.states
 			add(player);
 			add(gibs);
 			add(enemies);
+			add(projectiles);
 			add(ui);
 		}
 		
@@ -114,8 +118,10 @@ package net.blockjack.ld26.states
 		
 		private function checkCollisions():void {
 			FlxG.collide(enemies, tilemapLevel);
+			FlxG.collide(projectiles, tilemapLevel, projectileCollideWithLevel);
 			FlxG.collide(player, tilemapLevel);
 			FlxG.overlap(player, enemies, playerCollideWithEnemy);
+			FlxG.overlap(player, projectiles, playerCollideWithProjectile);
 			FlxG.collide(player, tilemapObjects);
 			FlxG.collide(gibs, tilemapLevel);
 		}
@@ -130,9 +136,20 @@ package net.blockjack.ld26.states
 			killPlayer();
 		}
 		
+		public function projectileCollideWithLevel(projectile:Bullet, tiles:FlxTilemap):void {
+			projectile.kill();
+		}
+		
 		public function playerCollideWithEnemy(player:Player, enemy:Enemy):void {
 			if(FlxCollision.pixelPerfectCheck(player, enemy)) {
 				killPlayer();
+			}
+		}
+		
+		public function playerCollideWithProjectile(player:Player, projectile:Bullet):void {
+			if(FlxCollision.pixelPerfectCheck(player, projectile)) {
+				killPlayer();
+				projectile.kill();
 			}
 		}
 		
@@ -153,6 +170,12 @@ package net.blockjack.ld26.states
 		public function killPlayer():void {
 			restartText.visible = true;
 			player.kill();
+		}
+		
+		public function createProjectile(position:FlxPoint, direction:uint):void {
+			var projectile:Bullet = projectiles.recycle(Bullet) as Bullet
+			projectile.reset(position.x, position.y);
+			projectile.setDirection(direction);
 		}
 		
 		override public function destroy():void {

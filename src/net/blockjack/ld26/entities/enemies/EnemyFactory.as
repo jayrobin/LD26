@@ -1,5 +1,6 @@
 package net.blockjack.ld26.entities.enemies 
 {
+	import org.flixel.FlxObject;
 	/**
 	 * ...
 	 * @author James Robinson
@@ -11,6 +12,11 @@ package net.blockjack.ld26.entities.enemies
 		private static const TYPE_BOUNCER:uint = 0x00FFFF;
 		private static const TYPE_STICKER:uint = 0xFF00DC;
 		private static const TYPE_RUNNER:uint = 0xB200FF;
+		
+		private static const TYPE_TURRET_LEFT:uint = 0x606060;
+		private static const TYPE_TURRET_RIGHT:uint = 0x808080;
+		private static const TYPE_TURRET_UP:uint = 0xA0A0A0;
+		private static const TYPE_TURRET_DOWN:uint = 0xC0C0C0;
 		
 		public static function createEnemy(type:uint, x:Number, y:Number):Enemy {
 			var enemy:Enemy;
@@ -29,6 +35,18 @@ package net.blockjack.ld26.entities.enemies
 					break;
 				case TYPE_RUNNER:
 					enemy = new Runner();
+					break;
+				case TYPE_TURRET_LEFT:
+					enemy = new Turret(FlxObject.LEFT);
+					break;
+				case TYPE_TURRET_RIGHT:
+					enemy = new Turret(FlxObject.RIGHT);
+					break;
+				case TYPE_TURRET_UP:
+					enemy = new Turret(FlxObject.UP);
+					break;
+				case TYPE_TURRET_DOWN:
+					enemy = new Turret(FlxObject.DOWN);
 					break;
 			}
 			if(enemy)
