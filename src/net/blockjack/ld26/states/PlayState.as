@@ -157,8 +157,16 @@ package net.blockjack.ld26.states
 			nextLevel();
 		}
 		
+		public function playerCollideWithSpring(tile:FlxTile, player:Player):void {
+			player.bounce();
+		}
+		
 		public function levelOverlapsPoint(x:Number, y:Number):Boolean {
 			return level.overlapsPoint(x, y);
+		}
+		
+		public function isTileLadderAt(x:Number, y:Number):Boolean {
+			return level.isTileLadderAt(x, y);
 		}
 		
 		private function nextLevel():void {

@@ -87,6 +87,8 @@ package net.blockjack.ld26.world
 			tilemapObjects.setTileProperties(Tile.TILE_SPIKES_DOWN, FlxObject.DOWN, Registry.engine.playerCollideWithSpikes, Player);
 			tilemapObjects.setTileProperties(Tile.TILE_SPIKES_LEFT, FlxObject.LEFT, Registry.engine.playerCollideWithSpikes, Player);
 			tilemapObjects.setTileProperties(Tile.TILE_SPIKES_RIGHT, FlxObject.RIGHT, Registry.engine.playerCollideWithSpikes, Player);
+			tilemapObjects.setTileProperties(Tile.TILE_LADDER, FlxObject.CEILING);
+			tilemapObjects.setTileProperties(Tile.TILE_SPRING, FlxObject.CEILING, Registry.engine.playerCollideWithSpring, Player);
 		}
 		
 		public function getTilemap():FlxTilemap {
@@ -153,6 +155,12 @@ package net.blockjack.ld26.world
 			x = Math.floor(x / TILE_WIDTH);
 			y = Math.floor(y / TILE_HEIGHT);
 			return tilemap.getTile(x, y) != 0;
+		}
+		
+		public function isTileLadderAt(x:Number, y:Number):Boolean {
+			x = Math.floor(x / TILE_WIDTH);
+			y = Math.floor(y / TILE_HEIGHT);
+			return tilemapObjects.getTile(x, y) == Tile.TILE_LADDER;
 		}
 
 	}

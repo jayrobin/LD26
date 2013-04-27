@@ -34,6 +34,8 @@ package net.blockjack.ld26.entities
 		private var fallTime:Number;
 		private const MAX_FALL_TIME:Number = 1;
 		
+		private var isClimbing:Boolean;
+		
 		public function Player(gibs:FlxEmitter) 
 		{
 			this.gibs = gibs;
@@ -56,7 +58,7 @@ package net.blockjack.ld26.entities
 			jump = 0;
 			velocity.y = 0;
 			acceleration.y = Level.GRAVITY;
-			maxVelocity.y = JUMP_SPEED;
+			maxVelocity.y = 1.7 * JUMP_SPEED;
 			speed = BASE_SPEED;
 			fallTime = 0;
 			
@@ -66,6 +68,7 @@ package net.blockjack.ld26.entities
 		override public function update():void {
 			boundaryCheck();
 			jumpCheck();
+			ladderCheck();
 			move();
 			
 			super.update();
@@ -95,7 +98,7 @@ package net.blockjack.ld26.entities
 			}
 			
 			// collide with floor
-			if (isTouching(FlxObject.DOWN)) {
+			if (isTouching(FlxObject.DOWN) && velocity.y == 0) {
 				if (fallTime > MAX_FALL_TIME) {
 					Registry.engine.killPlayer();
 				}
@@ -130,17 +133,54 @@ package net.blockjack.ld26.entities
 			
 			if (jump > 0) {
 				if (jump < 0.2) {
-					velocity.y = -0.6 * maxVelocity.y;
+					velocity.y = -0.6 * JUMP_SPEED;
 				}
 				else {
-					velocity.y = -1 * maxVelocity.y;
+					velocity.y = -JUMP_SPEED;
 				}
 				play(ANIM_JUMPING);
 			}
 		}
 		
+		public function bounce():void {
+			velocity.y = -maxVelocity.y;
+			play(ANIM_JUMPING);
+		}
+		
+		private function ladderCheck():void {
+			var xCheck:Number = x;
+			if (facing == LEFT) {
+				xCheck += width;
+			}
+			
+			if (Registry.engine.isTileLadderAt(xCheck, y + height - 1)) {
+				setClimbing(true);
+			}
+			else {
+				setClimbing(false);
+			}
+		}
+		
+		private function setClimbing(isClimbing:Boolean):void {
+			if (isClimbing && !this.isClimbing) {
+				acceleration.y = 0;
+				play(ANIM_JUMPING);
+			}
+			else if(this.isClimbing && !isClimbing) {
+				acceleration.y = Level.GRAVITY;
+				y -= 0.5;	// jump 0.5 pixel up so as not to collide with adjacent platform
+				play(ANIM_RUN);
+			}
+			this.isClimbing = isClimbing;
+		}
+		
 		private function move():void {
-			x += speed;
+			if (isClimbing) {
+				y -= speed;
+			}
+			else {
+				x += speed;
+			}
 		}
 		
 		override public function kill():void {
