@@ -16,6 +16,9 @@ package net.blockjack.ld26.entities
 		[Embed(source = "../../../../../assets/gfx/entities/Player.png")]
 		private const playerPNG:Class;
 		
+		private var replay:Boolean;
+		
+		private var numGibs:Number;
 		private var gibs:FlxEmitter;
 		
 		private static const WIDTH:Number = 8;
@@ -36,9 +39,10 @@ package net.blockjack.ld26.entities
 		
 		private var isClimbing:Boolean;
 		
-		public function Player(gibs:FlxEmitter) 
+		public function Player(gibs:FlxEmitter, replay:Boolean = false) 
 		{
 			this.gibs = gibs;
+			this.replay = replay;
 			
 			loadAnimations();
 			
@@ -62,6 +66,13 @@ package net.blockjack.ld26.entities
 			speed = BASE_SPEED;
 			fallTime = 0;
 			
+			if (!replay) {
+				numGibs = 25;
+			}
+			else {
+				numGibs = 5;
+			}
+			
 			play(ANIM_RUN);
 		}
 		
@@ -72,6 +83,15 @@ package net.blockjack.ld26.entities
 			move();
 			
 			super.update();
+		}
+		
+		private function isJumpPressed():Boolean {
+			if (replay) {
+				return Math.random() > 0.95;
+			}
+			else {
+				return FlxG.keys.SPACE;
+			}
 		}
 		
 		private function boundaryCheck():void {
@@ -121,7 +141,7 @@ package net.blockjack.ld26.entities
 		}
 		
 		private function jumpCheck():void {
-			if (jump >= 0 && FlxG.keys.SPACE) {
+			if (jump >= 0 && isJumpPressed()) {
 				jump += FlxG.elapsed;
 				if (jump > 0.25) {
 					jump = -1;
@@ -147,6 +167,11 @@ package net.blockjack.ld26.entities
 			play(ANIM_JUMPING);
 		}
 		
+		public function exit():void {
+			speed = 0;
+			play(ANIM_IDLE);
+		}
+		
 		private function ladderCheck():void {
 			var xCheck:Number = x;
 			if (facing == LEFT) {
@@ -164,6 +189,7 @@ package net.blockjack.ld26.entities
 		private function setClimbing(isClimbing:Boolean):void {
 			if (isClimbing && !this.isClimbing) {
 				acceleration.y = 0;
+				x = Math.floor(x);
 				play(ANIM_JUMPING);
 			}
 			else if(this.isClimbing && !isClimbing) {
@@ -192,7 +218,7 @@ package net.blockjack.ld26.entities
 			//FlxG.flash(0xffdb3624, 0.35);
 			if (gibs) {
 				gibs.at(this);
-				gibs.start(true);
+				gibs.start(true, 0, 0, numGibs);
 			}
 		}
 	}

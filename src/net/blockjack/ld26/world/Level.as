@@ -24,9 +24,6 @@ package net.blockjack.ld26.world
 		private var tilemap:FlxTilemap;
 		private var tilemapObjects:FlxTilemapPlus;
 		
-		private const TILE_WIDTH:Number = 8;
-		private const TILE_HEIGHT:Number = 8;
-		
 		[Embed(source="../../../../../assets/gfx/world/Level.png")]
 		private const LevelPNG:Class;
 		
@@ -53,8 +50,8 @@ package net.blockjack.ld26.world
 		
 		public function Level() 
 		{
-			width = Math.floor(Main.SWF_WIDTH / TILE_WIDTH);
-			height = Math.floor(Main.SWF_HEIGHT / TILE_HEIGHT);
+			width = Math.floor(Main.SWF_WIDTH / Tile.WIDTH);
+			height = Math.floor(Main.SWF_HEIGHT / Tile.HEIGHT);
 		}
 		
 		public function load(levelNum:Number):void {
@@ -69,7 +66,7 @@ package net.blockjack.ld26.world
 			levelSprite.drawFrame(true);
 			
 			tilemap = new FlxTilemap();
-			tilemap.loadMap(FlxTilemap.bitmapToCSV(levelSprite.framePixels, true), TilesPNG, TILE_WIDTH, TILE_HEIGHT, FlxTilemap.AUTO, 0, 0);
+			tilemap.loadMap(FlxTilemap.bitmapToCSV(levelSprite.framePixels, true), TilesPNG, Tile.WIDTH, Tile.HEIGHT, FlxTilemap.AUTO, 0, 0);
 		}
 		
 		private function loadDynamicObjects(levelNum:Number):void {
@@ -110,8 +107,8 @@ package net.blockjack.ld26.world
 			
 			var enemyData:BitmapData = enemySprite.framePixels;
 			var pixel:int;
-			var tileWidth:int = TILE_WIDTH;
-			var tileHeight:int = TILE_HEIGHT;
+			var tileWidth:int = Tile.WIDTH;
+			var tileHeight:int = Tile.HEIGHT;
 			var j:int;
 			for (var i:int = 0; i < width; i++) {
 				for (j = 0; j < height; j++) {
@@ -133,8 +130,8 @@ package net.blockjack.ld26.world
 				for (var i:int = 0; i < height; i++) {
 					for (j = 0; j < width; j++) {
 						if (tilemapObjects.getTile(j, i) == Tile.TILE_START) {
-							start.x = j * TILE_WIDTH;
-							start.y = i * TILE_HEIGHT;
+							start.x = j * Tile.WIDTH;
+							start.y = i * Tile.HEIGHT;
 						}
 					}
 				}
@@ -152,14 +149,14 @@ package net.blockjack.ld26.world
 		}
 		
 		public function overlapsPoint(x:uint, y:uint):Boolean {
-			x = Math.floor(x / TILE_WIDTH);
-			y = Math.floor(y / TILE_HEIGHT);
+			x = Math.floor(x / Tile.WIDTH);
+			y = Math.floor(y / Tile.HEIGHT);
 			return tilemap.getTile(x, y) != 0;
 		}
 		
 		public function isTileLadderAt(x:Number, y:Number):Boolean {
-			x = Math.floor(x / TILE_WIDTH);
-			y = Math.floor(y / TILE_HEIGHT);
+			x = Math.floor(x / Tile.WIDTH);
+			y = Math.floor(y / Tile.HEIGHT);
 			return tilemapObjects.getTile(x, y) == Tile.TILE_LADDER;
 		}
 

@@ -24,7 +24,7 @@ package net.blockjack.ld26.states
 			var background:FlxSprite = new FlxSprite(0, 0, backgroundPNG);
 			add(background);
 			
-			FlxG.flash(Main.BACKGROUND_COLOR, 0.5);
+			FlxG.flash(Main.BACKGROUND_COLOR, Main.TRANSITION_SPEED);
 			
 			transitioning = false;
 		}
@@ -34,12 +34,12 @@ package net.blockjack.ld26.states
 			
 			if (!transitioning && FlxG.keys.justPressed("SPACE")) {
 				transitioning = true;
-				FlxG.fade(0xE6D69C, 0.5, function():void { play(); } );
+				FlxG.fade(0xE6D69C, Main.TRANSITION_SPEED, function():void { play(); } );
 			}
 		}
 		
 		private function play():void {
-			FlxG.switchState(new PlayState());
+			FlxG.switchState(new LevelSelectState());
 		}
 	}
 }
