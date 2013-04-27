@@ -16,6 +16,8 @@ package net.blockjack.ld26
 		public function Main()
 		{
 			super(SWF_WIDTH, SWF_HEIGHT, MainMenuState, 3, 60, 60);
+			
+			Registry.levelNum = 2;
 		}
 	}
 
