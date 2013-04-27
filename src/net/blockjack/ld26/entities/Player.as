@@ -1,6 +1,7 @@
 package net.blockjack.ld26.entities 
 {
 	import net.blockjack.ld26.Main;
+	import net.blockjack.ld26.Registry;
 	import net.blockjack.ld26.world.Level;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
@@ -82,15 +83,21 @@ package net.blockjack.ld26.entities
 			}
 			
 			// collide with walls
-			if (isTouching(FlxObject.RIGHT) || isTouching(FlxObject.LEFT)) {
+			if (isTouching(RIGHT) || isTouching(LEFT)) {
 				speed = -speed;
+				
+				if (facing == RIGHT) {
+					facing = LEFT;
+				}
+				else {
+					facing = RIGHT;
+				}
 			}
 			
 			// collide with floor
 			if (isTouching(FlxObject.DOWN)) {
 				if (fallTime > MAX_FALL_TIME) {
-					trace(fallTime);
-					kill();
+					Registry.engine.killPlayer();
 				}
 				jump = 0;
 				fallTime = 0;
@@ -103,12 +110,10 @@ package net.blockjack.ld26.entities
 				fallTime = 0;
 			}
 			
-			// off bottom of screen = kill
+			// off bottom of screen
 			if (y > Main.SWF_HEIGHT - height && alive) {
 				y = Main.SWF_HEIGHT - height;
 				velocity.y = 0;
-				
-				kill();
 			}
 		}
 		

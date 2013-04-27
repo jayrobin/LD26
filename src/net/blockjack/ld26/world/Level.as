@@ -1,8 +1,12 @@
 package net.blockjack.ld26.world 
 {
+	import flash.display.BitmapData;
+	import net.blockjack.ld26.entities.enemies.EnemyFactory;
 	import net.blockjack.ld26.entities.Player;
 	import net.blockjack.ld26.Main;
 	import net.blockjack.ld26.Registry;
+	import org.flixel.FlxG;
+	import org.flixel.FlxGroup;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
@@ -37,6 +41,9 @@ package net.blockjack.ld26.world
 		
 		[Embed(source="../../../../../assets/gfx/world/Legend.png")]
 		private const ObjectLegendPNG:Class;
+		
+		[Embed(source = "../../../../../assets/gfx/world/LevelEnemies.png")]
+		private const EnemiesPNG:Class;
 		
 		[Embed(source="../../../../../assets/gfx/world/Background.png")]
 		private const BackgroundPNG:Class;
@@ -87,6 +94,32 @@ package net.blockjack.ld26.world
 			return tilemapObjects as FlxTilemap;
 		}
 		
+		public function getEnemies(levelNum:Number):FlxGroup {
+			var enemies:FlxGroup = new FlxGroup();
+			
+			var enemySprite:FlxSprite = new FlxSprite();
+			enemySprite.loadGraphic(EnemiesPNG, true, false, width, height);
+			
+			enemySprite.frame = levelNum;
+			enemySprite.drawFrame(true);
+			
+			var enemyData:BitmapData = enemySprite.framePixels;
+			var pixel:int;
+			var tileWidth:int = TILE_WIDTH;
+			var tileHeight:int = TILE_HEIGHT;
+			var j:int;
+			for (var i:int = 0; i < width; i++) {
+				for (j = 0; j < height; j++) {
+					pixel = enemyData.getPixel(i, j);
+					if(pixel != 0) {
+						enemies.add(EnemyFactory.createEnemy(pixel, i * tileWidth, j * tileHeight));
+					}
+				}
+			}
+			
+			return enemies;
+		}
+		
 		public function getStartPoint():FlxPoint {
 			var start:FlxPoint = new FlxPoint(0, 0);
 			
@@ -112,6 +145,13 @@ package net.blockjack.ld26.world
 			
 			return background;
 		}
+		
+		public function overlapsPoint(x:uint, y:uint):Boolean {
+			x = Math.floor(x / TILE_WIDTH);
+			y = Math.floor(y / TILE_HEIGHT);
+			return tilemap.getTile(x, y) != 0;
+		}
+
 	}
 
 }

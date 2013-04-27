@@ -1,14 +1,18 @@
 package net.blockjack.ld26.states 
 {
+	import net.blockjack.ld26.entities.enemies.Enemy;
 	import net.blockjack.ld26.entities.Player;
 	import net.blockjack.ld26.Main;
 	import net.blockjack.ld26.Registry;
 	import net.blockjack.ld26.world.Level;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
+	import org.flixel.FlxGroup;
 	import org.flixel.FlxPoint;
+	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
 	import org.flixel.FlxTilemap;
+	import org.flixel.plugin.photonstorm.FlxCollision;
 	import org.flixel.system.FlxTile;
 	/**
 	 * ...
@@ -17,8 +21,9 @@ package net.blockjack.ld26.states
 	public class PlayState extends FlxState
 	{
 		private var player:Player;
-		
 		private var gibs:FlxEmitter
+		
+		private var enemies:FlxGroup;
 		
 		private var level:Level;
 		private var tilemapLevel:FlxTilemap;
@@ -26,6 +31,12 @@ package net.blockjack.ld26.states
 		
 		[Embed(source = "../../../../../assets/gfx/effects/Gibs.png")]
 		private const GibsPNG:Class;
+		
+		[Embed(source="../../../../../assets/gfx/ui/RestartMessage.png")]
+		private const RestartPNG:Class;
+		private var restartText:FlxSprite;
+		
+		private var ui:FlxGroup;
 		
 		override public function create():void {
 			Registry.engine = this;
@@ -35,7 +46,9 @@ package net.blockjack.ld26.states
 			createLevel();
 			var startPos:FlxPoint = level.getStartPoint();
 			createGibs();
+			createEnemies();
 			createPlayer(startPos);
+			createUI();
 			
 			setupLevel();
 			
@@ -65,12 +78,29 @@ package net.blockjack.ld26.states
 			gibs.makeParticles(GibsPNG, 20, 0, true, 0.5);
 		}
 		
+		private function createEnemies():void {
+			enemies = level.getEnemies(Registry.levelNum);
+		}
+		
+		private function createUI():void {
+			ui = new FlxGroup();
+			
+			restartText = new FlxSprite(0, 0, RestartPNG);
+			restartText.x = Main.SWF_WIDTH / 2 - restartText.width / 2;
+			restartText.y = Main.SWF_HEIGHT / 2 - restartText.height / 2;
+			restartText.visible = false;
+			
+			ui.add(restartText);
+		}
+		
 		private function setupLevel():void {
 			add(level.getBackground());
 			add(tilemapLevel);
 			add(tilemapObjects);
 			add(player);
 			add(gibs);
+			add(enemies);
+			add(ui);
 		}
 		
 		override public function update():void {
@@ -82,29 +112,46 @@ package net.blockjack.ld26.states
 		}
 		
 		private function checkCollisions():void {
+			FlxG.collide(enemies, tilemapLevel);
 			FlxG.collide(player, tilemapLevel);
+			FlxG.overlap(player, enemies, playerCollideWithEnemy);
 			FlxG.collide(player, tilemapObjects);
 			FlxG.collide(gibs, tilemapLevel);
 		}
 		
 		private function checkReset():void {
-			if (FlxG.keys.justPressed("R")) {
+			if (!player.alive && FlxG.keys.justPressed("SPACE")) {
 				FlxG.switchState(new PlayState());
 			}
 		}
 		
 		public function playerCollideWithSpikes(tile:FlxTile, player:Player):void {
-			player.kill();
+			killPlayer();
+		}
+		
+		public function playerCollideWithEnemy(player:Player, enemy:Enemy):void {
+			if(FlxCollision.pixelPerfectCheck(player, enemy)) {
+				killPlayer();
+			}
 		}
 		
 		public function playerCollideWithExit(tile:FlxTile, player:Player):void {
 			nextLevel();
 		}
 		
+		public function levelOverlapsPoint(x:Number, y:Number):Boolean {
+			return level.overlapsPoint(x, y);
+		}
+		
 		private function nextLevel():void {
 			player.alive = false;
 			Registry.levelNum++;
 			FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new PlayState()); } );
+		}
+		
+		public function killPlayer():void {
+			restartText.visible = true;
+			player.kill();
 		}
 		
 		override public function destroy():void {
