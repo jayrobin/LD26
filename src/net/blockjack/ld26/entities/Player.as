@@ -39,7 +39,7 @@ package net.blockjack.ld26.entities
 		private const JUMP_SPEED:Number = 55;
 		
 		private var fallTime:Number;
-		private const MAX_FALL_TIME:Number = 1;
+		private const MAX_FALL_TIME:Number = 0.8;
 		
 		private var isClimbing:Boolean;
 		
@@ -146,7 +146,7 @@ package net.blockjack.ld26.entities
 			// collide with floor
 			if (isTouching(FlxObject.DOWN) && velocity.y == 0) {
 				if (fallTime > MAX_FALL_TIME) {
-					Registry.engine.killPlayer();
+					Registry.engine.killPlayer(this);
 				}
 				jump = 0;
 				fallTime = 0;

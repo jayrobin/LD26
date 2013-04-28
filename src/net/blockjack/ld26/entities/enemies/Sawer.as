@@ -29,11 +29,11 @@ package net.blockjack.ld26.entities.enemies
 		
 		private function loadAnimations():void {
 			loadGraphic(EnemyPNG, true, false, WIDTH, HEIGHT);
-			addAnimation(ANIM_SAW_UP, 		[0, 1], 30, true);
-			addAnimation(ANIM_SAW_DOWN, 	[2, 3], 30, true);
-			addAnimation(ANIM_SAW_RIGHT, 	[4, 5], 30, true);
-			addAnimation(ANIM_SAW_LEFT, 	[6, 7], 30, true);
-			addAnimation(ANIM_SAW_MIDDLE, 	[8, 9], 30, true);
+			addAnimation(ANIM_SAW_UP, 		[0, 1], 20, true);
+			addAnimation(ANIM_SAW_DOWN, 	[2, 3], 20, true);
+			addAnimation(ANIM_SAW_RIGHT, 	[4, 5], 20, true);
+			addAnimation(ANIM_SAW_LEFT, 	[6, 7], 20, true);
+			addAnimation(ANIM_SAW_MIDDLE, 	[8, 9], 20, true);
 		}
 		
 		override public function reset(x:Number, y:Number):void {

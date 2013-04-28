@@ -223,7 +223,9 @@ package net.blockjack.ld26.states
 		public function playerCollideWithProjectile(player:Player, projectile:Bullet):void {
 			if(projectile.alive && FlxCollision.pixelPerfectCheck(player, projectile)) {
 				killPlayer(player);
-				projectile.kill();
+				
+				if(!replay)
+					projectile.kill();
 			}
 		}
 		
