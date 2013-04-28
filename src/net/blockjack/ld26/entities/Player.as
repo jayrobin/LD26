@@ -40,6 +40,8 @@ package net.blockjack.ld26.entities
 		private static const ANIM_IDLE:String = "idle";
 		private static const ANIM_RUN:String = "run";
 		private static const ANIM_JUMPING:String = "jump";
+		private static const ANIM_CLIMBING:String = "climb";
+		private static const ANIM_WIN:String = "win";
 		
 		private var speed:Number;
 		private const BASE_SPEED:Number = 0.5;
@@ -72,8 +74,10 @@ package net.blockjack.ld26.entities
 		private function loadAnimations():void {
 			loadGraphic(playerPNG, true, true, WIDTH, HEIGHT);
 			addAnimation(ANIM_IDLE, [0], 0, true);
-			addAnimation(ANIM_RUN, [0, 1, 2, 1, 0, 3, 4, 3], 60, true);
-			addAnimation(ANIM_JUMPING, [5], 0, true);
+			addAnimation(ANIM_RUN, [1, 2, 3, 2], 20, true);
+			addAnimation(ANIM_JUMPING, [5], 10, true);
+			addAnimation(ANIM_CLIMBING, [6, 7], 10, true);
+			addAnimation(ANIM_WIN, [8, 9, 10, 11, 12, 11, 10, 9, 8], 10, true);
 		}
 		
 		override public function reset(x:Number, y:Number):void {
@@ -95,7 +99,9 @@ package net.blockjack.ld26.entities
 				numGibs = 5;
 			}
 			
-			play(ANIM_RUN);
+			if(speed != 0) {
+				play(ANIM_RUN);
+			}
 		}
 		
 		override public function update():void {
@@ -168,7 +174,10 @@ package net.blockjack.ld26.entities
 				}
 				jump = 0;
 				fallTime = 0;
-				play(ANIM_RUN);
+				
+				if(speed != 0) {
+					play(ANIM_RUN);
+				}
 			}
 			else if (velocity.y > 0) {
 				fallTime += FlxG.elapsed;
@@ -193,9 +202,12 @@ package net.blockjack.ld26.entities
 			}
 			else {
 				jump = -1;
+				
+				if(velocity.y > 0 && speed != 0)
+					play(ANIM_JUMPING);
 			}
 			
-			if (jump > 0) {
+			if (jump > 0 && speed != 0) {
 				if (jump < 0.2) {
 					velocity.y = -0.6 * JUMP_SPEED;
 				}
@@ -214,7 +226,8 @@ package net.blockjack.ld26.entities
 		
 		public function exit():void {
 			speed = 0;
-			play(ANIM_IDLE);
+			velocity.y = maxVelocity.y;
+			play(ANIM_WIN);
 			FlxG.play(winSND);
 		}
 		
@@ -240,7 +253,7 @@ package net.blockjack.ld26.entities
 				speed = BASE_SPEED;
 				acceleration.y = 0;
 				x = Math.floor(x / Tile.WIDTH) * Tile.WIDTH;
-				play(ANIM_JUMPING);
+				play(ANIM_CLIMBING);
 			}
 			else if(this.isClimbing && !isClimbing) {
 				acceleration.y = Level.GRAVITY;

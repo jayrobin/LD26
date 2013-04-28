@@ -86,6 +86,12 @@ package net.blockjack.ld26.world
 			tilemapObjects.setTileProperties(Tile.TILE_SPIKES_RIGHT, FlxObject.RIGHT, Registry.engine.playerCollideWithSpikes, Player);
 			tilemapObjects.setTileProperties(Tile.TILE_LADDER, FlxObject.CEILING);
 			tilemapObjects.setTileProperties(Tile.TILE_SPRING, FlxObject.CEILING, Registry.engine.playerCollideWithSpring, Player);
+			
+			tilemapObjects.setTileProperties(Tile.TILE_EXIT_SIGN, FlxObject.NONE, null, null, 3);
+		}
+		
+		public function exit():void {
+			tilemapObjects.setTileProperties(Tile.TILE_EXIT, FlxObject.NONE);
 		}
 		
 		public function getTilemap():FlxTilemap {

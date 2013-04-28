@@ -15,6 +15,7 @@ package net.blockjack.ld26.world
 		public static const TILE_SPIKES_LEFT:Number = 6;
 		public static const TILE_LADDER:Number = 7;
 		public static const TILE_SPRING:Number = 8;
+		public static const TILE_EXIT_SIGN:Number = 9;
 		
 		public static const WIDTH:Number = 8;
 		public static const HEIGHT:Number = 8;

@@ -40,7 +40,7 @@ package net.blockjack.ld26.states
 			if (!transitioning && FlxG.keys.justPressed("SPACE")) {
 				transitioning = true;
 				FlxG.play(Registry.ClickSND);
-				FlxG.fade(0xE6D69C, Main.TRANSITION_SPEED, function():void { play(); } );
+				FlxG.fade(0xE6D69C, Main.TRANSITION_SPEED, function():void { FlxG.switchState(new LevelSelectState()); } );
 			}
 			
 			if (FlxG.keys.justPressed("M")) {

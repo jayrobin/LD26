@@ -131,9 +131,18 @@ package net.blockjack.ld26.states
 			else {
 				replayPopup = new FlxSprite(0, 0);
 				replayPopup.loadGraphic(ReplayPNG, true, false, Main.SWF_WIDTH, Main.SWF_HEIGHT);
-				replayPopup.addAnimation("playTop", [0, 1], 10);
-				replayPopup.addAnimation("playBottom", [2, 3], 10);
-				replayPopup.play("playTop");
+				replayPopup.addAnimation("up", [0, 1], 10);
+				replayPopup.addAnimation("down", [2, 3], 10);
+				
+				if (Registry.REPLAY_POS[Registry.levelNum] == FlxObject.UP) {
+					replayPopup.play("up");
+				}
+				else if (Registry.REPLAY_POS[Registry.levelNum] == FlxObject.DOWN) {
+					replayPopup.play("down");
+				}
+				else {
+					replayPopup.visible = false;
+				}
 				ui.add(replayPopup);
 			}
 			
@@ -231,6 +240,7 @@ package net.blockjack.ld26.states
 		
 		public function playerCollideWithExit(tile:FlxTile, player:Player):void {
 			player.exit();
+			level.exit();
 			
 			if (replay) {
 				infoPopup.showReplayComplete();
@@ -264,14 +274,19 @@ package net.blockjack.ld26.states
 			Registry.levelNum++;
 			saveData();
 			
-			FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new PlayState()); } );
+			if(Registry.levelNum < Registry.LEVEL_NAMES.length) {
+				FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new PlayState()); } );
+			}
+			else {
+				FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new OutroState()); } );
+			}
 		}
 		
 		private function showReplay():void {
 			Registry.unlockedToLevelNum = Math.max(Registry.levelNum + 1, Registry.unlockedToLevelNum);
 			saveData();
 			
-			FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new PlayState(true)); } );
+			FlxG.fade(Main.BACKGROUND_COLOR, Main.TRANSITION_SPEED * 2, function():void { FlxG.switchState(new PlayState(true)); } );
 		}
 		
 		public function killPlayer(player:Player = null):void {

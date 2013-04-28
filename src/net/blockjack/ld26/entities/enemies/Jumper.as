@@ -34,7 +34,7 @@ package net.blockjack.ld26.entities.enemies
 		private function loadAnimations():void {
 			loadGraphic(EnemyPNG, true, true, WIDTH, HEIGHT);
 			addAnimation(ANIM_IDLE, [0], 20, true);
-			addAnimation(ANIM_JUMPING, [0, 1], 20, false);
+			addAnimation(ANIM_JUMPING, [0, 1, 2], 10, false);
 		}
 		
 		override public function update():void {

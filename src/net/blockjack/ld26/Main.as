@@ -2,6 +2,7 @@ package net.blockjack.ld26
 {
 	
 	import flash.events.Event;
+	import net.blockjack.ld26.states.IntroState;
 	import net.blockjack.ld26.states.MainMenuState;
 	import org.flixel.*; //Allows you to refer to flixel objects in your code
 	[SWF(width="480", height="432", backgroundColor="#E6D69C", align="center")]
@@ -19,9 +20,13 @@ package net.blockjack.ld26
 		
 		public function Main()
 		{
-			super(SWF_WIDTH, SWF_HEIGHT, MainMenuState, 3, 60, 60);
+			super(SWF_WIDTH, SWF_HEIGHT, IntroState, 3, 60, 60);
 			
 			setupGame();
+			
+			if (Registry.unlockedToLevelNum > 0) {
+				_iState = MainMenuState;
+			}
 		}
 		
 		private function setupGame():void {
@@ -33,7 +38,8 @@ package net.blockjack.ld26
 			Registry.replays = new Array();
 			
 			loadData();
-			Registry.levelNum = Registry.unlockedToLevelNum = 20;
+			Registry.levelNum = Registry.LEVEL_NAMES.length - 1;
+			Registry.unlockedToLevelNum = Registry.LEVEL_NAMES.length - 1;
 			
 			useSoundHotKeys = false;
 		}
