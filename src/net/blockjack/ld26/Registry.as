@@ -37,6 +37,9 @@ package net.blockjack.ld26
 													"Level 3",
 													"Level 5"];
 		
+		[Embed(source="../../../../assets/snd/click.mp3")]
+		public static const ClickSND:Class;
+		
 	}
 
 }

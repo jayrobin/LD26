@@ -17,6 +17,15 @@ package net.blockjack.ld26.entities
 		[Embed(source = "../../../../../assets/gfx/entities/Player.png")]
 		private const playerPNG:Class;
 		
+		[Embed(source="../../../../../assets/snd/jump.mp3")]
+		private const jumpSND:Class;
+		
+		[Embed(source="../../../../../assets/snd/die.mp3")]
+		private const dieSND:Class;
+		
+		[Embed(source="../../../../../assets/snd/win.mp3")]
+		private const winSND:Class;
+		
 		private var inControl:Boolean;
 		private var replay:Array;
 		private var replayIndex:Number;
@@ -107,11 +116,20 @@ package net.blockjack.ld26.entities
 					replayIndex++;
 				}
 				
+				if (FlxG.keys.justPressed("SPACE") && velocity.y == 0) {
+					FlxG.play(jumpSND);
+				}
+				
 				return FlxG.keys.SPACE;
 			}
 			else {
 				if (replay[replayIndex] == age) {
 					replayIndex++;
+					
+					if (velocity.y == 0) {
+						FlxG.play(jumpSND);
+					}
+					
 					return true;
 				}
 				else {
@@ -191,11 +209,13 @@ package net.blockjack.ld26.entities
 		public function bounce():void {
 			velocity.y = -maxVelocity.y;
 			play(ANIM_JUMPING);
+			FlxG.play(jumpSND);
 		}
 		
 		public function exit():void {
 			speed = 0;
 			play(ANIM_IDLE);
+			FlxG.play(winSND);
 		}
 		
 		private function ladderCheck():void {
@@ -256,6 +276,7 @@ package net.blockjack.ld26.entities
 				
 			super.kill();
 			FlxG.shake(0.002, 0.2);
+			FlxG.play(dieSND);
 			if (gibs) {
 				gibs.at(this);
 				gibs.start(true, 0, 0, numGibs);

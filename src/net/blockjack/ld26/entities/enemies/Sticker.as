@@ -15,6 +15,9 @@ package net.blockjack.ld26.entities.enemies
 		[Embed(source="../../../../../../assets/gfx/entities/enemies/Sticker.png")]
 		private const EnemyPNG:Class;
 		
+		[Embed(source = "../../../../../../assets/snd/enemyJump.mp3")]
+		private const enemyJumpSND:Class;
+		
 		private static const ANIM_IDLE_UP:String = "idleUp";
 		private static const ANIM_IDLE_DOWN:String = "idleDown";
 		private static const ANIM_JUMPING:String = "jumping";
@@ -56,6 +59,7 @@ package net.blockjack.ld26.entities.enemies
 				
 				play(ANIM_JUMPING);
 				jumpDelay = 0;
+				FlxG.play(enemyJumpSND);
 			}
 			else if (justTouched(DOWN)) {
 				acceleration.y = 0;

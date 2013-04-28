@@ -12,6 +12,9 @@ package net.blockjack.ld26.entities.enemies
 		[Embed(source="../../../../../../assets/gfx/entities/enemies/Turret.png")]
 		private const EnemyPNG:Class;
 		
+		[Embed(source = "../../../../../../assets/snd/shoot.mp3")]
+		private const shootSND:Class;
+		
 		private static const ANIM_IDLE_LEFT:String = "idleLeft";
 		private static const ANIM_SHOOT_LEFT:String = "shootLeft";
 		private static const ANIM_IDLE_RIGHT:String = "idleRight";
@@ -76,6 +79,7 @@ package net.blockjack.ld26.entities.enemies
 					break;
 			}
 			
+			FlxG.play(shootSND);
 			Registry.engine.createProjectile(weaponPos, facing);
 		}
 		

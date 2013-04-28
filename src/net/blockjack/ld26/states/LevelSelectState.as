@@ -103,13 +103,16 @@ package net.blockjack.ld26.states
 			
 			if (running) {
 				if (FlxG.keys.justPressed("LEFT") || FlxG.keys.justPressed("A")) {
+					FlxG.play(Registry.ClickSND);
 					changeLevel(-1);
 				}
 				else if (FlxG.keys.justPressed("RIGHT") || FlxG.keys.justPressed("D")) {
+					FlxG.play(Registry.ClickSND);
 					changeLevel(1);
 				}
 				
 				if (FlxG.keys.justPressed("SPACE")) {
+					FlxG.play(Registry.ClickSND);
 					transitionToPlay();
 				}
 				
