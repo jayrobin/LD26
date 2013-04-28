@@ -1,7 +1,11 @@
 package net.blockjack.ld26.states 
 {
+	import net.blockjack.ld26.entities.enemies.Bouncer;
+	import net.blockjack.ld26.entities.enemies.Walker;
+	import net.blockjack.ld26.entities.Player;
 	import net.blockjack.ld26.Main;
 	import org.flixel.FlxButton;
+	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
@@ -13,7 +17,7 @@ package net.blockjack.ld26.states
 	 */
 	public class MainMenuState extends FlxState
 	{
-		[Embed(source = "../../../../../assets/gfx/states/menuBackground.png")]
+		[Embed(source = "../../../../../assets/gfx/ui/menuBackground.png")]
 		private const backgroundPNG:Class;
 		
 		private var transitioning:Boolean;

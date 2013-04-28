@@ -18,6 +18,8 @@ package net.blockjack.ld26.entities.enemies
 		private static const TYPE_TURRET_UP:uint = 0xA0A0A0;
 		private static const TYPE_TURRET_DOWN:uint = 0xC0C0C0;
 		
+		private static const TYPE_SAWER:uint = 0x7FC9FF;
+		
 		public static function createEnemy(type:uint, x:Number, y:Number):Enemy {
 			var enemy:Enemy;
 			switch (type) {
@@ -47,6 +49,9 @@ package net.blockjack.ld26.entities.enemies
 					break;
 				case TYPE_TURRET_DOWN:
 					enemy = new Turret(FlxObject.DOWN);
+					break;
+				case TYPE_SAWER:
+					enemy = new Sawer();
 					break;
 			}
 			if(enemy)

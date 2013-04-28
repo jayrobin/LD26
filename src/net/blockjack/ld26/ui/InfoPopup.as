@@ -13,7 +13,6 @@ package net.blockjack.ld26.ui
 		private const InfoPopupsPNG:Class;
 		
 		private const ANIM_RESTART:String = "restart";
-		private const ANIM_REPLAY:String = "replay";
 		private const ANIM_REPLAY_COMPLETE:String = "replayComplete";
 		
 		public function InfoPopup() 
@@ -25,7 +24,6 @@ package net.blockjack.ld26.ui
 			loadGraphic(InfoPopupsPNG, true, false, Main.SWF_WIDTH, Main.SWF_HEIGHT);
 			addAnimation(ANIM_RESTART, [0]);
 			addAnimation(ANIM_REPLAY_COMPLETE, [1]);
-			addAnimation(ANIM_REPLAY, [2]);
 			alpha = 0;
 		}
 		
@@ -36,11 +34,6 @@ package net.blockjack.ld26.ui
 		
 		public function showReplayComplete():void {
 			play(ANIM_REPLAY_COMPLETE);
-			alpha = 0.01;
-		}
-		
-		public function showReplay():void {
-			play(ANIM_REPLAY);
 			alpha = 0.01;
 		}
 		

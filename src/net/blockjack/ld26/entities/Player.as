@@ -3,6 +3,7 @@ package net.blockjack.ld26.entities
 	import net.blockjack.ld26.Main;
 	import net.blockjack.ld26.Registry;
 	import net.blockjack.ld26.world.Level;
+	import net.blockjack.ld26.world.Tile;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
@@ -78,7 +79,7 @@ package net.blockjack.ld26.entities
 			speed = BASE_SPEED;
 			fallTime = 0;
 			
-			if (!replay) {
+			if (inControl) {
 				numGibs = 25;
 			}
 			else {
@@ -200,10 +201,11 @@ package net.blockjack.ld26.entities
 		private function ladderCheck():void {
 			var xCheck:Number = x;
 			if (facing == LEFT) {
-				xCheck += width;
+				xCheck += width - 1;
 			}
 			
 			if (Registry.engine.isTileLadderAt(xCheck, y + height - 1)) {
+				
 				setClimbing(true);
 			}
 			else {
@@ -213,14 +215,24 @@ package net.blockjack.ld26.entities
 		
 		private function setClimbing(isClimbing:Boolean):void {
 			if (isClimbing && !this.isClimbing) {
+				jump = -1;
+				velocity.y = 0;
+				speed = BASE_SPEED;
 				acceleration.y = 0;
-				x = Math.floor(x);
+				x = Math.floor(x / Tile.WIDTH) * Tile.WIDTH;
 				play(ANIM_JUMPING);
 			}
 			else if(this.isClimbing && !isClimbing) {
 				acceleration.y = Level.GRAVITY;
 				y -= 0.5;	// jump 0.5 pixel up so as not to collide with adjacent platform
 				play(ANIM_RUN);
+				
+				if (facing == LEFT) {
+					speed = -BASE_SPEED;
+				}
+				else {
+					speed = BASE_SPEED;
+				}
 			}
 			this.isClimbing = isClimbing;
 		}
@@ -244,7 +256,6 @@ package net.blockjack.ld26.entities
 				
 			super.kill();
 			FlxG.shake(0.002, 0.2);
-			//FlxG.flash(0xffdb3624, 0.35);
 			if (gibs) {
 				gibs.at(this);
 				gibs.start(true, 0, 0, numGibs);

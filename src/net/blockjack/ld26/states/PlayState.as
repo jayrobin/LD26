@@ -42,6 +42,10 @@ package net.blockjack.ld26.states
 		
 		private var infoPopup:InfoPopup;
 		
+		[Embed(source="../../../../../assets/gfx/ui/ReplayBackground.png")]
+		private const ReplayPNG:Class;
+		private var replayPopup:FlxSprite;
+		
 		[Embed(source="../../../../../assets/gfx/ui/InfoPopups.png")]
 		private const TutorialsPNG:Class;
 		
@@ -117,14 +121,23 @@ package net.blockjack.ld26.states
 		private function createUI():void {
 			ui = new FlxGroup();
 			
+			if(!replay) {
+				var tutorial:FlxSprite = new FlxSprite(0, 0);
+				tutorial.loadGraphic(TutorialsPNG, true, false, Main.SWF_WIDTH, Main.SWF_HEIGHT);
+				tutorial.frame = Registry.levelNum;
+				tutorial.drawFrame(true);
+				ui.add(tutorial);
+			}
+			else {
+				replayPopup = new FlxSprite(0, 0);
+				replayPopup.loadGraphic(ReplayPNG, true, false, Main.SWF_WIDTH, Main.SWF_HEIGHT);
+				replayPopup.addAnimation("playTop", [0, 1], 10);
+				replayPopup.addAnimation("playBottom", [2, 3], 10);
+				replayPopup.play("playTop");
+				ui.add(replayPopup);
+			}
+			
 			infoPopup = new InfoPopup();
-			
-			var tutorial:FlxSprite = new FlxSprite(0, 0);
-			tutorial.loadGraphic(TutorialsPNG, true, false, Main.SWF_WIDTH, Main.SWF_HEIGHT);
-			tutorial.frame = Registry.levelNum;
-			tutorial.drawFrame(true);
-			
-			ui.add(tutorial);
 			ui.add(infoPopup);
 		}
 		
@@ -175,7 +188,7 @@ package net.blockjack.ld26.states
 		
 		private function checkReset():void {
 			if (FlxG.keys.justPressed("SPACE")) {
-				if (replay && infoPopup.isShowing()) {
+				if (replay) {
 					nextLevel();
 				}
 				else if(!replay && !player.alive) {
@@ -184,12 +197,13 @@ package net.blockjack.ld26.states
 			}
 			
 			if (FlxG.keys.justPressed("ESCAPE")) {
+				Registry.replays = new Array();
 				FlxG.switchState(new MainMenuState());
 			}
 			
-			//if (FlxG.keys.justPressed("R")) {
-				//FlxG.switchState(new PlayState(true));
-			//}
+			if (FlxG.keys.justPressed("R") && replay && infoPopup.isShowing()) {
+				FlxG.switchState(new PlayState(true));
+			}
 		}
 		
 		public function playerCollideWithSpikes(tile:FlxTile, player:Player):void {
@@ -217,7 +231,8 @@ package net.blockjack.ld26.states
 			player.exit();
 			
 			if (replay) {
-				infoPopup.showReplay();
+				infoPopup.showReplayComplete();
+				replayPopup.visible = false;
 			}
 			else {
 				Registry.replays.push(player.getReplay());
@@ -235,6 +250,10 @@ package net.blockjack.ld26.states
 		
 		public function isTileLadderAt(x:Number, y:Number):Boolean {
 			return level.isTileLadderAt(x, y);
+		}
+		
+		public function isTileEmptyAt(x:Number, y:Number):Boolean {
+			return level.isTileEmptyAt(x, y);
 		}
 		
 		private function nextLevel():void {

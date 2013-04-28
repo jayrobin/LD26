@@ -159,6 +159,12 @@ package net.blockjack.ld26.world
 			y = Math.floor(y / Tile.HEIGHT);
 			return tilemapObjects.getTile(x, y) == Tile.TILE_LADDER;
 		}
+		
+		public function isTileEmptyAt(x:Number, y:Number):Boolean {
+			x = Math.floor(x / Tile.WIDTH);
+			y = Math.floor(y / Tile.HEIGHT);
+			return tilemap.getTile(x, y) == 0;
+		}
 
 	}
 
