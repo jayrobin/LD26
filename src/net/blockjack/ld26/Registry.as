@@ -9,6 +9,7 @@ package net.blockjack.ld26
 	public class Registry 
 	{
 		public static var engine:PlayState;
+		public static var replays:Array;
 		public static var save:FlxSave;
 		public static var levelNum:Number;
 		public static var unlockedToLevelNum:Number;

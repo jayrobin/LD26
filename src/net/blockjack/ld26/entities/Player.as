@@ -16,7 +16,10 @@ package net.blockjack.ld26.entities
 		[Embed(source = "../../../../../assets/gfx/entities/Player.png")]
 		private const playerPNG:Class;
 		
-		private var replay:Boolean;
+		private var inControl:Boolean;
+		private var replay:Array;
+		private var replayIndex:Number;
+		private var age:Number;
 		
 		private var numGibs:Number;
 		private var gibs:FlxEmitter;
@@ -39,10 +42,17 @@ package net.blockjack.ld26.entities
 		
 		private var isClimbing:Boolean;
 		
-		public function Player(gibs:FlxEmitter, replay:Boolean = false) 
+		public function Player(gibs:FlxEmitter, replay:Array = null) 
 		{
 			this.gibs = gibs;
-			this.replay = replay;
+			if (replay) {
+				this.replay = replay;
+				inControl = false;
+			}
+			else {
+				this.replay = new Array();
+				inControl = true;
+			}
 			
 			loadAnimations();
 			
@@ -59,6 +69,8 @@ package net.blockjack.ld26.entities
 		override public function reset(x:Number, y:Number):void {
 			super.reset(x, y);
 			
+			age = 0;
+			replayIndex = 0;
 			jump = 0;
 			velocity.y = 0;
 			acceleration.y = Level.GRAVITY;
@@ -77,6 +89,8 @@ package net.blockjack.ld26.entities
 		}
 		
 		override public function update():void {
+			age++;
+			
 			boundaryCheck();
 			jumpCheck();
 			ladderCheck();
@@ -86,11 +100,22 @@ package net.blockjack.ld26.entities
 		}
 		
 		private function isJumpPressed():Boolean {
-			if (replay) {
-				return Math.random() > 0.95;
+			if (inControl) {
+				if (FlxG.keys.SPACE) {
+					replay[replayIndex] = age;
+					replayIndex++;
+				}
+				
+				return FlxG.keys.SPACE;
 			}
 			else {
-				return FlxG.keys.SPACE;
+				if (replay[replayIndex] == age) {
+					replayIndex++;
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 		}
 		
@@ -207,6 +232,10 @@ package net.blockjack.ld26.entities
 			else {
 				x += speed;
 			}
+		}
+		
+		public function getReplay():Array {
+			return replay;
 		}
 		
 		override public function kill():void {

@@ -30,8 +30,10 @@ package net.blockjack.ld26
 			Registry.save = save;
 			Registry.levelNum = 0;
 			Registry.unlockedToLevelNum = 0;
+			Registry.replays = new Array();
 			
 			loadData();
+			Registry.levelNum = Registry.unlockedToLevelNum = 0;
 			
 			useSoundHotKeys = false;
 		}

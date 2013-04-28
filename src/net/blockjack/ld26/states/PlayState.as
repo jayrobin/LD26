@@ -5,6 +5,7 @@ package net.blockjack.ld26.states
 	import net.blockjack.ld26.entities.Player;
 	import net.blockjack.ld26.Main;
 	import net.blockjack.ld26.Registry;
+	import net.blockjack.ld26.ui.InfoPopup;
 	import net.blockjack.ld26.world.Level;
 	import org.flixel.FlxEmitter;
 	import org.flixel.FlxG;
@@ -39,21 +40,21 @@ package net.blockjack.ld26.states
 		[Embed(source = "../../../../../assets/gfx/effects/Gibs.png")]
 		private const GibsPNG:Class;
 		
-		[Embed(source="../../../../../assets/gfx/ui/RestartMessage.png")]
-		private const RestartPNG:Class;
-		private var restartText:FlxSprite;
+		private var infoPopup:InfoPopup;
 		
 		[Embed(source="../../../../../assets/gfx/ui/InfoPopups.png")]
-		private const InfoPopupsPNG:Class;
+		private const TutorialsPNG:Class;
 		
 		private var ui:FlxGroup;
+		
+		public function PlayState(replay:Boolean = false):void {
+			this.replay = replay;
+		}
 		
 		override public function create():void {
 			Registry.engine = this;
 			
 			super.create();
-			
-			replay = true;
 			
 			createLevel();
 			var startPos:FlxPoint = level.getStartPoint();
@@ -70,7 +71,7 @@ package net.blockjack.ld26.states
 		
 		private function createPlayer(startPos:FlxPoint):void {
 			if(!replay) {
-				player = new Player(gibs, true);
+				player = new Player(gibs);
 				player.x = startPos.x;
 				player.y = startPos.y;
 			}
@@ -79,8 +80,10 @@ package net.blockjack.ld26.states
 		private function createReplays(startPos:FlxPoint):void {
 			if (replay) {
 				replays = new FlxGroup();
-				for (var i:int = 0; i < 20; i++) {
-					var player:Player = new Player(gibs, true);
+				var numReplays:Number = Registry.replays.length;
+				
+				for (var i:int = 0; i < numReplays; i++) {
+					var player:Player = new Player(gibs, Registry.replays[i]);
 					player.x = startPos.x;
 					player.y = startPos.y;
 					
@@ -114,18 +117,15 @@ package net.blockjack.ld26.states
 		private function createUI():void {
 			ui = new FlxGroup();
 			
-			restartText = new FlxSprite(0, 0, RestartPNG);
-			restartText.x = Main.SWF_WIDTH / 2 - restartText.width / 2;
-			restartText.y = Main.SWF_HEIGHT / 2 - restartText.height / 2;
-			restartText.visible = false;
+			infoPopup = new InfoPopup();
 			
-			var infoPopup:FlxSprite = new FlxSprite(0, 0);
-			infoPopup.loadGraphic(InfoPopupsPNG, true, false, Main.SWF_WIDTH, Main.SWF_HEIGHT);
-			infoPopup.frame = Registry.levelNum;
-			infoPopup.drawFrame(true);
+			var tutorial:FlxSprite = new FlxSprite(0, 0);
+			tutorial.loadGraphic(TutorialsPNG, true, false, Main.SWF_WIDTH, Main.SWF_HEIGHT);
+			tutorial.frame = Registry.levelNum;
+			tutorial.drawFrame(true);
 			
+			ui.add(tutorial);
 			ui.add(infoPopup);
-			ui.add(restartText);
 		}
 		
 		private function setupLevel():void {
@@ -175,7 +175,10 @@ package net.blockjack.ld26.states
 		
 		private function checkReset():void {
 			if (FlxG.keys.justPressed("SPACE")) {
-				if(replay || !player.alive) {
+				if (replay && infoPopup.isShowing()) {
+					nextLevel();
+				}
+				else if(!replay && !player.alive) {
 					FlxG.switchState(new PlayState());
 				}
 			}
@@ -183,6 +186,10 @@ package net.blockjack.ld26.states
 			if (FlxG.keys.justPressed("ESCAPE")) {
 				FlxG.switchState(new MainMenuState());
 			}
+			
+			//if (FlxG.keys.justPressed("R")) {
+				//FlxG.switchState(new PlayState(true));
+			//}
 		}
 		
 		public function playerCollideWithSpikes(tile:FlxTile, player:Player):void {
@@ -210,10 +217,11 @@ package net.blockjack.ld26.states
 			player.exit();
 			
 			if (replay) {
-				endReplay();
+				infoPopup.showReplay();
 			}
 			else {
-				nextLevel();
+				Registry.replays.push(player.getReplay());
+				showReplay();
 			}
 		}
 		
@@ -230,17 +238,19 @@ package net.blockjack.ld26.states
 		}
 		
 		private function nextLevel():void {
-			player.alive = false;
+			Registry.replays = new Array();
 			
 			Registry.levelNum++;
-			Registry.unlockedToLevelNum = Math.max(Registry.levelNum, Registry.unlockedToLevelNum);
 			saveData();
 			
 			FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new PlayState()); } );
 		}
 		
-		private function endReplay():void {
-			FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new PlayState()); } );
+		private function showReplay():void {
+			Registry.unlockedToLevelNum = Math.max(Registry.levelNum + 1, Registry.unlockedToLevelNum);
+			saveData();
+			
+			FlxG.fade(Main.BACKGROUND_COLOR, 0.5, function():void { FlxG.switchState(new PlayState(true)); } );
 		}
 		
 		public function killPlayer(player:Player = null):void {
@@ -251,7 +261,8 @@ package net.blockjack.ld26.states
 			player.kill();
 			
 			if(!replay) {
-				restartText.visible = true;
+				Registry.replays.push(player.getReplay());
+				infoPopup.showRestart();
 			}
 		}
 		
