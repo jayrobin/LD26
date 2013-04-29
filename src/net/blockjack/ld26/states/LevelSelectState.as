@@ -1,6 +1,7 @@
 package net.blockjack.ld26.states 
 {
 	import flash.display.BitmapData;
+	import net.blockjack.ld26.entities.enemies.EnemyFactory;
 	import net.blockjack.ld26.Main;
 	import net.blockjack.ld26.Registry;
 	import net.blockjack.ld26.world.Level;
@@ -34,6 +35,9 @@ package net.blockjack.ld26.states
 		
 		[Embed(source = "../../../../../assets/gfx/world/LevelObjects.png")]
 		private const LevelObjectsPNG:Class;
+		
+		[Embed(source = "../../../../../assets/gfx/world/LevelEnemies.png")]
+		private const EnemiesPNG:Class;
 		
 		[Embed(source="../../../../../assets/gfx/ui/LevelSelectBackground.png")]
 		private const BackgroundPNG:Class;
@@ -75,12 +79,23 @@ package net.blockjack.ld26.states
 					if(pixel == 0x4CFF00 || pixel == 0x0026FF || pixel == 0x9E753C || pixel == 0x004A7F) {
 						levelSelector.pixels.setPixel(i, j, Main.BACKGROUND_COLOR);
 					}
-					else if (pixel != 0) {
+					//else if (pixel != 0) {
+						//levelSelector.pixels.setPixel(i, j, 0x7B7162);
+					//}
+				}
+			}
+			
+			objectSprite.loadGraphic(EnemiesPNG, true, false, width, height);
+			
+			objectData = objectSprite.pixels;
+			for (i = 0; i < objectData.width; i++) {
+				for (j = 0; j < objectData.height; j++) {
+					pixel = objectData.getPixel(i, j);
+					if(EnemyFactory.isEnemyPixel(pixel)) {
 						levelSelector.pixels.setPixel(i, j, 0x7B7162);
 					}
 				}
 			}
-			
 			
 			
 			leftSelect = new FlxSprite(8, (Main.SWF_HEIGHT / 2), LeftSelectPNG);

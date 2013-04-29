@@ -1,7 +1,9 @@
 package net.blockjack.ld26.states 
 {
 	import net.blockjack.ld26.Main;
+	import net.blockjack.ld26.Registry;
 	import org.flixel.FlxG;
+	import org.flixel.FlxSave;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
 	/**
@@ -23,6 +25,10 @@ package net.blockjack.ld26.states
 		
 		override public function create():void {
 			super.create();
+			
+			Registry.levelNum = 0;
+			Registry.unlockedToLevelNum = Registry.LEVEL_NAMES.length - 1;
+			saveData();
 			
 			background = new FlxSprite(0, 0, BackgroundPNG);
 			add(background);
@@ -55,6 +61,16 @@ package net.blockjack.ld26.states
 				remove(background);
 				frameFinished = true;
 			}
+		}
+		
+		private function saveData():void {
+			var save:FlxSave = Registry.save;
+			
+			save.data.version = Main.VERSION;
+			save.data.levelNum = Registry.levelNum;
+			save.data.unlockedToLevelNum = Registry.unlockedToLevelNum;
+			
+			save.flush();
 		}
 	}
 

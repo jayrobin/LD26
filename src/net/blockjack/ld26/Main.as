@@ -38,8 +38,8 @@ package net.blockjack.ld26
 			Registry.replays = new Array();
 			
 			loadData();
-			Registry.levelNum = Registry.LEVEL_NAMES.length - 1;
-			Registry.unlockedToLevelNum = Registry.LEVEL_NAMES.length - 1;
+			//Registry.levelNum = Registry.LEVEL_NAMES.length - 1;
+			//Registry.unlockedToLevelNum = Registry.LEVEL_NAMES.length - 1;
 			
 			useSoundHotKeys = false;
 		}

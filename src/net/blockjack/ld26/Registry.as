@@ -14,7 +14,7 @@ package net.blockjack.ld26
 		public static var save:FlxSave;
 		public static var levelNum:Number;
 		public static var unlockedToLevelNum:Number;
-		public static const LEVEL_NAMES:Array =[	"Jumping Jack",
+		public static const LEVEL_NAMES:Array =[	"The End",
 													"See Saws",
 													"R.O.U.S",
 													"A Hole",
@@ -36,8 +36,8 @@ package net.blockjack.ld26
 													"Workplace Hazard",
 													"Springfield",
 													"Ladder 49",
-													"",
-													""];
+													"Monty Hall",
+													"The Beginning"];
 		
 		public static const REPLAY_POS:Array = [	FlxObject.UP,
 													FlxObject.UP,
@@ -47,7 +47,7 @@ package net.blockjack.ld26
 													FlxObject.UP,
 													FlxObject.UP,
 													FlxObject.UP,
-													FlxObject.NONE,
+													FlxObject.UP,
 													FlxObject.UP,
 													FlxObject.NONE,
 													FlxObject.NONE,

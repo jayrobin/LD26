@@ -60,6 +60,18 @@ package net.blockjack.ld26.entities.enemies
 			return enemy;
 		}
 		
+		public static function isEnemyPixel(pixel:uint):Boolean {
+			return 	pixel == TYPE_WALKER ||
+					pixel == TYPE_JUMPER ||
+					pixel == TYPE_BOUNCER ||
+					pixel == TYPE_STICKER ||
+					pixel == TYPE_RUNNER ||
+					pixel == TYPE_TURRET_LEFT ||
+					pixel == TYPE_TURRET_RIGHT ||
+					pixel == TYPE_TURRET_DOWN ||
+					pixel == TYPE_SAWER;
+		}
+		
 	}
 
 }
