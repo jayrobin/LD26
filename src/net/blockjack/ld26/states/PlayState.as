@@ -174,6 +174,21 @@ package net.blockjack.ld26.states
 			checkCollisions();
 			
 			checkReset();
+			checkMute();
+		}
+		
+		private function checkMute():void {
+			if (FlxG.keys.justPressed("M")) {
+				if (FlxG.mute) {
+					FlxG.mute = false;
+					FlxG.flash(Main.BACKGROUND_COLOR, Main.TRANSITION_SPEED / 2, null, true);
+					FlxG.play(Registry.ClickSND);
+				}
+				else {
+					FlxG.mute = true;
+					FlxG.flash(Main.BACKGROUND_COLOR, Main.TRANSITION_SPEED / 2,null, true);
+				}
+			}
 		}
 		
 		private function checkCollisions():void {
